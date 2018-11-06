@@ -26,23 +26,22 @@ namespace P1ElGamal
                 K.genRandomBits(current_key.P.bitCount() - 1, random_number);
             } while (K.gcd(current_key.P - 1) != 1);
 
-            // compute the values A and B
+            // compute the values  A = G exp K mod P
+            // and B = ((Y exp K mod P) * plain_data_block) / P
             BigInteger A = current_key.G.modPow(K, current_key.P);
             BigInteger B = (current_key.Y.modPow(K, current_key.P) * new BigInteger(plaintext_data_block)) % (current_key.P);
 
-            // create an array to contain the ciphertext
+            // ciphertext
             byte[] cipher_result = new byte[ciphertext_blocksize];
 
             // copy the bytes from A and B into the result array
             byte[] a_bytes = A.getBytes();
-            Array.Copy(a_bytes, 0, cipher_result, ciphertext_blocksize / 2
-                - a_bytes.Length, a_bytes.Length);
+            Array.Copy(a_bytes, 0, cipher_result, ciphertext_blocksize / 2 - a_bytes.Length, a_bytes.Length);
 
             byte[] b_bytes = B.getBytes();
-            Array.Copy(b_bytes, 0, cipher_result, ciphertext_blocksize
-                - b_bytes.Length, b_bytes.Length);
+            Array.Copy(b_bytes, 0, cipher_result, ciphertext_blocksize - b_bytes.Length, b_bytes.Length);
 
-            // return the result array
+            // return the result array after merging A and B
             return cipher_result;
         }
 

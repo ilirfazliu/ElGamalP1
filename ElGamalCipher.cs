@@ -5,6 +5,8 @@ using System.Text;
 
 namespace P1ElGamal
 {
+    //As a class is used for ENC/DEC bases and to break up the data into blocks 
+
     public abstract class ElGamalCipher : ImplementationClass
     {
         protected int block_size;
@@ -21,7 +23,10 @@ namespace P1ElGamal
             current_key = elg_current_key;
 
             // calculate the blocksizes
-            //remember that the length of the key modulus affects the amount of data that can be processed by the encryption function in one go
+            //remember that the length of the key modulus affects the amount of data that can be processed by the
+            //encryption function in one go
+
+            //ElGamal encryption function produces ciphertext that is twice the size of the corresponding plaintext
             plaintext_blocksize = (elg_current_key.P.bitCount() - 1) / 8;
             ciphertext_blocksize = ((elg_current_key.P.bitCount() + 7) / 8) * 2;
 
@@ -32,15 +37,15 @@ namespace P1ElGamal
         public byte[] ProcessData(byte[] data)
         {
 
-            // create a stream backed by a memory array
+            //create a stream backed by a memory array
             MemoryStream stream = new MemoryStream();
-            // determine how many complete blocks there are
+
+            // calulate how many complete blocks
             int complete_blocks = data.Length / block_size;
 
-            // create an array which will hold a block
+            //hold a block
             byte[] hold_data_block = new Byte[block_size];
 
-            // run through and process the complete blocks
             int i = 0;
 
             for (; i < complete_blocks; i++)

@@ -17,60 +17,52 @@ namespace P1ElGamal
             public BigInteger X;
         }
 
+        // instance variable to present current key in use
         private ElGamalKeyStruct current_key;
-        // maximum length of the BigInteger in uint (4 bytes)
-        // change this to suit the required level of precision.
-
-        private const int maxLength = 70;
-        private uint[] data = null;            // stores bytes from the Big Integer
-        public int dataLength;                 // number of actual chars used
-
 
         public ImplementationClass()
         {
-            // create the key struct
+            
             current_key = new ElGamalKeyStruct();
-            // set all of the big integers to zero
+            // set all of the big integers to zero as a starting point
             current_key.P = new BigInteger(0);
             current_key.G = new BigInteger(0);
             current_key.Y = new BigInteger(0);
             current_key.X = new BigInteger(0);
 
-            /// Default constructor for BigInteger of value 0
-            data = new uint[maxLength];
-            dataLength = 1;
-
+            //set default key size 
             KeySizeValue = 1024;
+
             // set the range of legal keys
             LegalKeySizesValue = new[] { new KeySizes(384, 1088, 8) };
         }
-
-        //public override string KeyExchangeAlgorithm => "ElGamal";
-
+        
         private void CreateKeyPair(int key_strength)
         {
-            // create the random number generator
+            // create the random number
             Random random_number = new Random();
 
-            // create the large prime number, P
-            current_key.P = BigInteger.genPseudoPrime(key_strength,
-                16, random_number);
+            // create the large prime number, P  bits/confidence/random
+            current_key.P = BigInteger.genPseudoPrime(key_strength, 16, random_number);
 
             // create the two random numbers, which are smaller than P
             current_key.X = new BigInteger();
             current_key.X.genRandomBits(key_strength - 1, random_number);
+
             current_key.G = new BigInteger();
             current_key.G.genRandomBits(key_strength - 1, random_number);
 
-            // compute Y
+            // compute Y modPow(exp, modulo) Y = GexpX modP
             current_key.Y = current_key.G.modPow(current_key.X, current_key.P);
         }
 
+        //Checking if user has not typed any input 
         private bool NeedToGenerateKey()
         {
             return current_key.P == 0 && current_key.G == 0 && current_key.Y == 0;
         }
 
+        //If not create this key pair
         public ElGamalKeyStruct KeyStruct
         {
             get
@@ -104,10 +96,9 @@ namespace P1ElGamal
 
         public override ElGamalParameters ExportParameters(bool include_private_params)
         {
-
+            //If there is nothing to export create first a keypair
             if (NeedToGenerateKey())
             {
-                // we need to create a new key before we can export 
                 CreateKeyPair(KeySizeValue);
             }
 

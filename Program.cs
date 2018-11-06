@@ -8,46 +8,39 @@ namespace P1ElGamal
     {
         static void Main()
         {
-            // define the byte array that we will use
-            // as plaintext
-            byte[] x_plaintext
-                = Encoding.Default.GetBytes("ALBI SHALA");
+            // define the byte array that we will use as plaintext
+            Console.Write("Type your PLAINTEXT: ");
+            string _plaintext = Console.ReadLine();
+            byte[] plaintext = Encoding.Default.GetBytes(_plaintext);
 
-            Console.WriteLine("PlainText: {0} ", Encoding.UTF8.GetString(x_plaintext));
+            // Create an instance of the algorithm and generate keys
+            ImpExpElGamalParameters _parameters = new ImplementationClass();
 
-            // Create an instance of the algorithm and generate some keys
-            ImpExpElGamalParameters x_alg = new ImplementationClass();
+            // set the key size
+            _parameters.KeySize = 384;
 
-            // set the key size - keep is small to speed up the tests
-            x_alg.KeySize = 384;
+            // extract and print the xml string
+            string xml_string = _parameters.ToXmlString(true);
+            Console.WriteLine("\n{0} \n", xml_string);
 
-            // extract and print the xml string (this will cause a new key pair to be generated)
-            string x_xml_string = x_alg.ToXmlString(true);
-            Console.WriteLine("\n{0}\n", x_xml_string);
-           
-
-            // Test the basic encryption support
-            ImpExpElGamalParameters x_encrypt_alg = new ImplementationClass();
-
-            // set the keys - note that we export without the
-            // private parameters since we are encrypting data
-            x_encrypt_alg.FromXmlString(x_alg.ToXmlString(false));
-            byte[] x_ciphertext = x_alg.EncryptData(x_plaintext);
+            ImpExpElGamalParameters encrypt = new ImplementationClass();
+    
+            encrypt.FromXmlString(_parameters.ToXmlString(false));
+            byte[] ciphertext = _parameters.EncryptData(plaintext);
           
 
-            // create a new instance of the algorithm to decrypt
-            ImpExpElGamalParameters x_decrypt_alg = new ImplementationClass();
+            // decrypt instance
+            ImpExpElGamalParameters decrypt = new ImplementationClass();
 
-            // set the keys - note that we export with the
-            // private parameters since we are decrypting data
-            x_decrypt_alg.FromXmlString(x_alg.ToXmlString(true));
+            
+            decrypt.FromXmlString(_parameters.ToXmlString(true));
 
-            // restore the plaintext
-            byte[] x_candidate_plaintext = x_decrypt_alg.DecryptData(x_ciphertext);
+            // decrypted ciphertext
+            byte[] potential_plaintext = decrypt.DecryptData(ciphertext);
             
 
-            Console.WriteLine("BASIC ENCRYPTION: {0} \n",
-                CompareArrays(x_plaintext, x_candidate_plaintext));
+            Console.WriteLine("\n\nPLAINTEXT: {0} \n\nCIPHERTEXT: {1} \n\nDECRYPTED: {2} \n\n", Encoding.UTF8.GetString(plaintext),
+                Encoding.UTF8.GetString(ciphertext), Encoding.UTF8.GetString(potential_plaintext));
             Console.ReadLine();
         }
 
