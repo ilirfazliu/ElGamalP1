@@ -7,17 +7,17 @@ namespace P1ElGamal
 {
     //As a class is used for ENC/DEC bases and to break up the data into blocks 
 
-    public abstract class ElGamalCipher : ImplementationClass
+      public abstract class ElGamalCipher : ImplementationClass
     {
-        protected int block_size;
-        protected int plaintext_blocksize;
-        protected int ciphertext_blocksize;
-        protected ElGamalKeyStruct current_key;
+          protected int block_size;
+          protected int plaintext_blocksize;
+          protected int ciphertext_blocksize;
+          protected ElGamalKeyStruct current_key;
 
-        protected abstract byte[] ProcessDataBlock(byte[] plaintext_data_block);
-        protected abstract byte[] ProcessFinalDataBlock(byte[] final_plaintext_block);
+         protected abstract byte[] ProcessDataBlock(byte[] plaintext_data_block);
+         protected abstract byte[] ProcessFinalDataBlock(byte[] final_plaintext_block);
 
-        public ElGamalCipher(ElGamalKeyStruct elg_current_key)
+         public ElGamalCipher(ElGamalKeyStruct elg_current_key)
         {
             // set the key details
             current_key = elg_current_key;
@@ -50,11 +50,11 @@ namespace P1ElGamal
 
             for (; i < complete_blocks; i++)
             {
-                // copy the block and create the big integer
+               // copy the block and create the big integer
                 Array.Copy(data, i * block_size, hold_data_block, 0, block_size);
-                // process the block
+               // process the block
                 byte[] result = ProcessDataBlock(hold_data_block);
-                // write the processed data into the stream
+               // write the processed data into the stream 
                 stream.Write(result, 0, result.Length);
             }
 
